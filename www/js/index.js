@@ -16,6 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+var navBar = "<div class='nav-bar'>" +
+        "<div>" +
+          "<div class='nav-drawer-button'></div>" +
+        "</div>" +
+      "</div>" +
+      "<nav class='nav-drawer'>" +
+        "<ul>" +
+          "<li><a>Check-In</a></li>" +
+          "<li><a>Journal</a></li>" +
+          "<li><a>Resources</a></li>" +
+          "<li><a>Interventions</a></li>" +
+          "<li><a>Settings</a></li>" +
+        "</ul>" +
+      "</nav>";
+
 var app = {
   // Application Constructor
   initialize: function() {
@@ -23,7 +38,7 @@ var app = {
 
     var self = this;
     this.store = new MemoryStore (function() {
-        self.loadMain();
+        self.loadCheckin();
     });
   },
   // Bind Event Listeners
@@ -52,16 +67,43 @@ var app = {
     console.log('Received Event: ' + id);
   },
 
-  loadMain: function() {
-    var html = "<div class='app'>" +
-        "<h1>PhoneGap</h1>" +
-        "<div id='deviceready' class='blink'>" + 
-        "<p class='event listening'>Connecting to Device</p>" +
-        "<p class='event received'>Device is Ready</p>" +
-      "</div>" +
+  loadCheckin: function() {
+    var html = "<div class='app' style='text-align:center'>" +
+      "<h1>Check In</h1>" + 
+      "<div><div class='emoji'>&#x1F603</div>" +
+      "<div class='emoji'>&#x1F622</div></div>" +
+      "<div><div class='emoji'>&#x1F610</div>" +
+      "<div class='emoji'>&#x1F620</div></div>" +
+      "<div><div class='emoji'>&#x1F62E</div>" +
+      "<div class='emoji'>&#x1F634</div></div>" +
       "</div>";
-    $('body').html(html);
+    $('body').html(navBar + html);
+    $('.emoji').on("click", function() {
+      app.loadSuccessfulCheckin();
+    });
+  },
+
+  loadSuccessfulCheckin: function() {
+    var html = "<div class='app' style='text-align:center'>" +
+      "<h1>Thank you!</h1>" + 
+      "<p>You did it! Yay!</p>" +
+      "</div>";
+    $('body').html(navBar + html);
+
+  },
+
+  initNav: function() {
+    var slideMenuButton = document.getElementById('nav-drawer-button');
+    slideMenuButton.onclick = function (e) {
+        var cl = document.body.classList;
+        if (cl.contains('left-nav')) {
+            cl.remove('left-nav');
+        } else {
+            cl.add('left-nav');
+        }
+    };
   }
 };
 
 app.initialize();
+app.initNav();
