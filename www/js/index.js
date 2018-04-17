@@ -19,9 +19,9 @@
 var navBar = "<div class='nav-bar'>" +
       "<button class='nav-button' id='checkinBtn'>Check In</button>" +
       "<button class='nav-button' id='campusBtn'>Campus Data</button>" +
-      "<button class='nav-button' id='campusBtn'>Resources</button>" +
-      "<button class='nav-button' id='campusBtn'>Interventions</button>" +
-      "<button class='nav-button' id='campusBtn'>Settings</button>" +
+      "<button class='nav-button' id='resourceBtn'>Resources</button>" +
+      "<button class='nav-button' id='interventionBtn'>Interventions</button>" +
+      "<button class='nav-button' id='settingsBtn'>Settings</button>" +
     "</nav>";
 
 var dataServer = "http://10.0.0.12:2080";
@@ -77,13 +77,7 @@ var app = {
     "</div>";
     $('body').html(navBar + html);
 
-    $('#checkinBtn').on('click', function() {
-      app.loadCheckin();
-    });
-
-    $('#campusBtn').on('click', function() {
-      app.loadCampusData();
-    });
+    app.setNav();
 
     $('input').on("click", function(e) {
       e.preventDefault();
@@ -114,21 +108,43 @@ var app = {
       "</div>";
     $('body').html(navBar + html);
 
-    $('#checkinBtn').on('click', function() {
-      app.loadCheckin();
-    });
-
-    $('#campusBtn').on('click', function() {
-      app.loadCampusData();
-    });
+    app.setNav();
+    
   },
 
   loadCampusData: function() {
-    var request = new XMLHttpRequest();
-    request.open("GET", dataServer + "/campusData", false);
-    request.send(null);
     $('body').html(navBar + request.responseText);
 
+    app.setNav();
+  },
+
+  loadResources: function() {
+    html = "<div class='app' style='text-align:center'>" +
+      "<h1>Campus Resources</h1>" + 
+      "<p>Resource</p>" +
+      "<p>Resource</p>" +
+      "<p>Resource</p>" +
+      "<p>Resource</p>" +
+      "<p>Resource</p>" +
+      "</div>";
+    $('body').html(navBar + html);
+
+    app.setNav();
+  },
+
+  loadInterventions: function() {
+    $('body').html(navBar + "<h1>Interventions</h1>");
+
+    app.setNav();
+  },
+
+  loadSettings: function() {
+    $('body').html(navBar + "<h1>Settings</h1>");
+
+    app.setNav();
+  },
+
+  setNav: function() {
     $('#checkinBtn').on('click', function() {
       app.loadCheckin();
     });
@@ -136,7 +152,19 @@ var app = {
     $('#campusBtn').on('click', function() {
       app.loadCampusData();
     });
-  },
+
+    $('#resourceBtn').on('click', function() {
+      app.loadResources();
+    });
+
+    $('#interventionBtn').on('click', function() {
+      app.loadInterventions();
+    });
+
+    $('#settingsBtn').on('click', function() {
+      app.loadSettings();
+    });
+  }
 };
 
 app.initialize();
