@@ -17,19 +17,14 @@
  * under the License.
  */
 var navBar = "<div class='nav-bar'>" +
-        "<div>" +
-          "<div class='nav-drawer-button'></div>" +
-        "</div>" +
-      "</div>" +
-      "<nav class='nav-drawer'>" +
-        "<ul>" +
-          "<li><a>Check-In</a></li>" +
-          "<li><a>Journal</a></li>" +
-          "<li><a>Resources</a></li>" +
-          "<li><a>Interventions</a></li>" +
-          "<li><a>Settings</a></li>" +
-        "</ul>" +
-      "</nav>";
+      "<button class='nav-button' id='checkinBtn'>Check In</button>" +
+      "<button class='nav-button' id='campusBtn'>Campus Data</button>" +
+      "<button class='nav-button' id='campusBtn'>Resources</button>" +
+      "<button class='nav-button' id='campusBtn'>Interventions</button>" +
+      "<button class='nav-button' id='campusBtn'>Settings</button>" +
+    "</nav>";
+
+var dataServer = "http://10.0.0.12:2080";
 
 var app = {
   // Application Constructor
@@ -69,17 +64,46 @@ var app = {
 
   loadCheckin: function() {
     var html = "<div class='app' style='text-align:center'>" +
-      "<h1>Check In</h1>" + 
-      "<div><div class='emoji'>&#x1F603</div>" +
-      "<div class='emoji'>&#x1F622</div></div>" +
-      "<div><div class='emoji'>&#x1F610</div>" +
-      "<div class='emoji'>&#x1F620</div></div>" +
-      "<div><div class='emoji'>&#x1F62E</div>" +
-      "<div class='emoji'>&#x1F634</div></div>" +
-      "</div>";
+      "<div>Check-In</div>" +
+      "<form action='" + dataServer + "/emoji' method = 'POST'>" +
+        "<input type='hidden' name='id' value='123'></input>" +
+        "<input type='submit' name='happy' value='&#x1F603' class='emoji'></input>" +
+        "<input type='submit' name='sad' value='&#x1F622' class='emoji'></input>" +
+        "<input type='submit' name='meh' value='&#x1F610' class='emoji'></input>" +
+        "<input type='submit' name='angry' value='&#x1F620' class='emoji'></input>" +
+        "<input type='submit' name='gasp' value='&#x1F62E' class='emoji'></input>" +
+        "<input type='submit' name='sleepy' value='&#x1F634' class='emoji'></input>" +
+      "</form>" +
+    "</div>";
     $('body').html(navBar + html);
-    $('.emoji').on("click", function() {
-      app.loadSuccessfulCheckin();
+
+    $('#checkinBtn').on('click', function() {
+      app.loadCheckin();
+    });
+
+    $('#campusBtn').on('click', function() {
+      app.loadCampusData();
+    });
+
+    $('input').on("click", function(e) {
+      e.preventDefault();
+
+      var url = $(this).parent('form').attr('action');
+      var button = $(e.target);                 
+      var result = $(this).parent('form').serialize() 
+        + '&' 
+        + encodeURI($(this).attr('name'))
+        + '='
+        + encodeURI($(this).attr('value'));
+
+      $.post(url, result)
+        .done( function() {
+          app.loadSuccessfulCheckin();
+        })
+        .fail( function() {
+          alert("Check in failed! Please try again.");
+        });
+      
     });
   },
 
@@ -90,20 +114,29 @@ var app = {
       "</div>";
     $('body').html(navBar + html);
 
+    $('#checkinBtn').on('click', function() {
+      app.loadCheckin();
+    });
+
+    $('#campusBtn').on('click', function() {
+      app.loadCampusData();
+    });
   },
 
-  initNav: function() {
-    var slideMenuButton = document.getElementById('nav-drawer-button');
-    slideMenuButton.onclick = function (e) {
-        var cl = document.body.classList;
-        if (cl.contains('left-nav')) {
-            cl.remove('left-nav');
-        } else {
-            cl.add('left-nav');
-        }
-    };
-  }
+  loadCampusData: function() {
+    var request = new XMLHttpRequest();
+    request.open("GET", dataServer + "/campusData", false);
+    request.send(null);
+    $('body').html(navBar + request.responseText);
+
+    $('#checkinBtn').on('click', function() {
+      app.loadCheckin();
+    });
+
+    $('#campusBtn').on('click', function() {
+      app.loadCampusData();
+    });
+  },
 };
 
 app.initialize();
-app.initNav();

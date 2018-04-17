@@ -4,6 +4,7 @@
 from socket import *
 from time import *
 from threading import *
+import datetime
 
 def getIPAddress():
     s = socket(AF_INET, SOCK_DGRAM)
@@ -18,7 +19,7 @@ def getMessage(client):
 
 def processRequest(cs, addr, lock):
 
-    direct = "/home/pi/Desktop/Ideation/"
+    direct = "/Users/Anna/ideation/"
 
     print ("Connnection from " + str(addr))
     
@@ -35,7 +36,12 @@ def processRequest(cs, addr, lock):
 
     try:
         if request == "/emoji":
-            print(data.split("\n")[-1])
+            checkinFile = open("checkinData.txt", 'a')
+            checkIn = data.split("\n")[-1].split("&")
+            userID = checkIn[0][3:]
+            emotion = checkIn[1][:checkIn[1].find("=")]
+            print(userID + "," + emotion + "," + str(datetime.datetime.now()), file = checkinFile)
+            checkinFile.close()
             response = "HTTP/1.1 200 OK \n"
             response += "Content-Type: text/html\n"
             response += "\r\n"
@@ -49,6 +55,16 @@ def processRequest(cs, addr, lock):
             cs.send(response.encode('ascii'))
             f = open(direct+"favicon.ico","rb")
             cs.send(f.read())
+
+        if request == "/campusData":
+            response = "HTTP/1.0 200 OK\n"
+            response += "Content-Type: text/html\n"
+            response +="\n" #
+            
+            checkinFile = open("checkinData.txt", 'r')
+            response += checkinFile.read()
+            cs.send(response.encode("ascii"))
+            checkinFile.close()
 
         else:
             response = "HTTP/1.1 501 Not Implemented \n"

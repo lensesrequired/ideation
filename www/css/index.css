@@ -75,23 +75,9 @@ h1 {
   border-bottom: 2px solid #000000;
 }
 
-.nav-drawer-button {
-  background:url("../img/menu.svg") no-repeat center;
-  background-size: cover;
-  height: 40px;
-  width: 40px;
-  padding: 2px;
-  margin: 3px;
-}
-
-.nav-drawer {
-  display:block;
-  position:absolute;
-  top:0;
-  left:0;
-  width:320px;
-  height:100%;
-  background-color:#353535;
+.nav-button {
+  height: 50px;
+  width: 20%;
 }
 
 .emoji {
